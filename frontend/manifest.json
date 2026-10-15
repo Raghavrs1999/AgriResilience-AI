@@ -1,0 +1,46 @@
+{
+  "name": "AgriResilience AI — Autonomous Agronomy Cockpit",
+  "short_name": "AgriResilience",
+  "description": "Hyperlocal Voice-First Multimodal Agronomy & Micro-Climate Defense for Smallholder Farmers",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0c1510",
+  "theme_color": "#20df72",
+  "orientation": "portrait-primary",
+  "categories": ["agriculture", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "assets/images/cotton_blight.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/cotton_blight.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dossier A: Cotton (Wash-Off)",
+      "short_name": "Cotton",
+      "description": "Maharashtra Cotton Rain Wash-Off Dossier",
+      "url": "./index.html?dossier=dossier_a_cotton"
+    },
+    {
+      "name": "Dossier B: Paddy (Blast)",
+      "short_name": "Paddy",
+      "description": "Bengal Paddy Airborne Blast Dossier",
+      "url": "./index.html?dossier=dossier_b_paddy"
+    },
+    {
+      "name": "Dossier C: Cassava (Viral)",
+      "short_name": "Cassava",
+      "description": "Java Cassava Stunting Roguing Dossier",
+      "url": "./index.html?dossier=dossier_c_cassava"
+    }
+  ]
+}

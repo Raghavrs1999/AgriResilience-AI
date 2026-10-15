@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriResilience AI — Google Material 3 & PAIR Agronomy Cockpit</title>
+  <meta name="description" content="Autonomous voice-first multimodal crop pathology and micro-climate defense agent built strictly adhering to Google Material Design 3 and Google PAIR (People + AI) guidelines.">
+  
+  <!-- Google Fonts: Google Sans / Plus Jakarta Sans & Roboto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Google Material Symbols Outlined (Official Google Iconography) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  
+  <!-- Leaflet CSS for Geospatial Satellite Maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <link rel="stylesheet" href="styles.css?v=3.2.0">
+  
+  <!-- Progressive Web App Manifest & Mobile Meta -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#20df72">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AgriResilience">
+  <link rel="apple-touch-icon" href="assets/images/cotton_blight.jpg">
+</head>
+<body class="m3-theme-dark">
+  <div class="m3-app-shell">
+    
+    <!-- Google Material 3 Top App Bar -->
+    <header class="m3-top-app-bar">
+      <div class="m3-app-bar-leading">
+        <div class="m3-brand-mark">
+          <span class="material-symbols-outlined m3-brand-icon">agriculture</span>
+          <div class="m3-brand-info">
+            <h1 class="m3-brand-title">AgriResilience <span class="m3-ai-badge">AI</span></h1>
+            <span class="m3-brand-sub">Google Cloud AI Builder Cup 2026 • Singapore Finale</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="m3-app-bar-center">
+        <!-- Google PAIR System Status Chips -->
+        <div class="m3-assist-chip active-pulse" title="Google Cloud Run deployment status">
+          <span class="m3-status-dot"></span>
+          <span class="m3-chip-text">Cloud Run: asia-southeast1</span>
+        </div>
+        <div class="m3-assist-chip" title="Earth Engine Sentinel-2 telemetry status">
+          <span class="material-symbols-outlined m3-chip-icon">satellite_alt</span>
+          <span class="m3-chip-text">Sentinel-2 L2A</span>
+        </div>
+        <div class="m3-assist-chip" title="Google Gemini 3.8 Flash multimodal reasoning engine">
+          <span class="material-symbols-outlined m3-chip-icon">auto_awesome</span>
+          <span class="m3-chip-text">Gemini 3.8 Flash</span>
+        </div>
+      </div>
+      
+      <div class="m3-app-bar-trailing">
+        <button id="themeToggleBtn" class="m3-icon-button" title="Switch Theme (Dark / Light)" aria-label="Toggle theme">
+          <span class="material-symbols-outlined" id="themeIcon">dark_mode</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="m3-main-content">
+      
+      <!-- M3 Filter Chips: Evaluation Scenarios -->
+      <section class="m3-scenarios-section m3-card-surface">
+        <div class="m3-section-eyebrow">
+          <span class="material-symbols-outlined m3-eyebrow-icon">science</span>
+          <span>GOOGLE CLOUD HACKATHON EVALUATION SCENARIOS (JAPAC SMALLHOLDER FIELD DATA)</span>
+        </div>
+        
+        <div class="m3-filter-chips-row" role="radiogroup" aria-label="Evaluation Scenarios">
+          <button class="m3-filter-chip active" id="btnDossierA" data-dossier="dossier_a_cotton" role="radio" aria-checked="true">
+            <span class="material-symbols-outlined m3-chip-leading-icon">eco</span>
+            <div class="m3-chip-text-group">
+              <span class="m3-chip-title">Dossier A: Cotton</span>
+              <span class="m3-chip-subtitle">Maharashtra • Marathi • 18mm Rain</span>
+            </div>
+            <span class="m3-badge m3-badge-error">HALT SPRAY</span>
+          </button>
+          
+          <button class="m3-filter-chip" id="btnDossierB" data-dossier="dossier_b_paddy" role="radio" aria-checked="false">
+            <span class="material-symbols-outlined m3-chip-leading-icon">grass</span>
+            <div class="m3-chip-text-group">
+              <span class="m3-chip-title">Dossier B: Paddy</span>
+              <span class="m3-chip-subtitle">West Bengal • Bengali • 48h Dry Window</span>
+            </div>
+            <span class="m3-badge m3-badge-success">SAFE TO SPRAY</span>
+          </button>
+          
+          <button class="m3-filter-chip" id="btnDossierC" data-dossier="dossier_c_cassava" role="radio" aria-checked="false">
+            <span class="material-symbols-outlined m3-chip-leading-icon">coronavirus</span>
+            <div class="m3-chip-text-group">
+              <span class="m3-chip-title">Dossier C: Cassava</span>
+              <span class="m3-chip-subtitle">Java • Bahasa • Roguing Required</span>
+            </div>
+            <span class="m3-badge m3-badge-warning">VIRAL ALERT</span>
+          </button>
+
+          <button class="m3-filter-chip" id="btnDossierD" data-dossier="dossier_d_maize" role="radio" aria-checked="false">
+            <span class="material-symbols-outlined m3-chip-leading-icon">agriculture</span>
+            <div class="m3-chip-text-group">
+              <span class="m3-chip-title">Dossier D: Maize</span>
+              <span class="m3-chip-subtitle">Andhra Pradesh • Telugu • Armyworm & Rain</span>
+            </div>
+            <span class="m3-badge m3-badge-error">HALT SPRAY</span>
+          </button>
+
+          <button class="m3-filter-chip" id="btnDossierE" data-dossier="dossier_e_sugarcane" role="radio" aria-checked="false">
+            <span class="material-symbols-outlined m3-chip-leading-icon">nature</span>
+            <div class="m3-chip-text-group">
+              <span class="m3-chip-title">Dossier E: Sugarcane</span>
+              <span class="m3-chip-subtitle">Tamil Nadu • Tamil • Red Rot Epidemic</span>
+            </div>
+            <span class="m3-badge m3-badge-success">SAFE TO SPRAY</span>
+          </button>
+
+          <button class="m3-filter-chip" id="btnDossierF" data-dossier="dossier_f_wheat" role="radio" aria-checked="false">
+            <span class="material-symbols-outlined m3-chip-leading-icon">grain</span>
+            <div class="m3-chip-text-group">
+              <span class="m3-chip-title">Dossier F: Wheat</span>
+              <span class="m3-chip-subtitle">Haryana • Hindi • Yellow Stripe Rust</span>
+            </div>
+            <span class="m3-badge m3-badge-success">SAFE TO SPRAY</span>
+          </button>
+
+          <button class="m3-filter-chip" id="btnDossierG" data-dossier="dossier_g_soybean" role="radio" aria-checked="false">
+            <span class="material-symbols-outlined m3-chip-leading-icon">potted_plant</span>
+            <div class="m3-chip-text-group">
+              <span class="m3-chip-title">Dossier G: Soybean</span>
+              <span class="m3-chip-subtitle">Vietnam • Vietnamese • Asian Rust 22mm</span>
+            </div>
+            <span class="m3-badge m3-badge-error">HALT SPRAY</span>
+          </button>
+
+          <button class="m3-filter-chip" id="btnEdgeSunscorch" data-dossier="dossier_edge_sunscorch" role="radio" aria-checked="false">
+            <span class="material-symbols-outlined m3-chip-leading-icon">wb_sunny</span>
+            <div class="m3-chip-text-group">
+              <span class="m3-chip-title">Edge 1: Sun-Scorch</span>
+              <span class="m3-chip-subtitle">Negative Control • Zero Chemicals</span>
+            </div>
+            <span class="m3-badge m3-badge-neutral">CONTROL</span>
+          </button>
+
+          <button class="m3-filter-chip" id="btnEdgeMechanical" data-dossier="dossier_edge_mechanical" role="radio" aria-checked="false">
+            <span class="material-symbols-outlined m3-chip-leading-icon">handyman</span>
+            <div class="m3-chip-text-group">
+              <span class="m3-chip-title">Edge 2: Machinery Tear</span>
+              <span class="m3-chip-subtitle">Negative Control • Hail Laceration</span>
+            </div>
+            <span class="m3-badge m3-badge-neutral">CONTROL</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Two-Column Workspace -->
+      <div class="m3-workspace-grid">
+        
+        <!-- Left Column: Multimodal Input & Ingestion -->
+        <div class="m3-col-left">
+          
+          <!-- M3 Outlined Card: Multimodal Ingestion Console -->
+          <div class="m3-card m3-card-outlined">
+            <div class="m3-card-header">
+              <div class="m3-card-title-group">
+                <span class="material-symbols-outlined m3-header-icon">add_a_photo</span>
+                <h2 class="m3-typescale-title-medium">1. Multimodal Field Ingestion</h2>
+              </div>
+              <span class="m3-tag-outlined" id="farmerProfileLabel">Tukaram Shinde (Jalna, MH)</span>
+            </div>
+
+            <!-- Leaf Macro Image Container -->
+            <div class="m3-image-view-box">
+              <div class="m3-preview-frame" id="leafPreviewWrapper">
+                <img id="leafImagePreview" src="assets/images/cotton_blight.jpg" alt="Crop Leaf Macro with Disease Lesions" class="m3-macro-image">
+                <div class="m3-scanning-laser hidden" id="scanningLaser"></div>
+                <div class="m3-bounding-overlay" id="boundingBoxOverlay"></div>
+              </div>
+              
+              <div class="m3-image-action-bar">
+                <label for="leafImageInput" class="m3-button m3-button-tonal">
+                  <span class="material-symbols-outlined">upload_file</span>
+                  <span>Upload Field Photo</span>
+                  <input type="file" id="leafImageInput" accept="image/*" class="m3-hidden-input">
+                </label>
+                <button id="toggleBoundingBoxesBtn" class="m3-button m3-button-outlined">
+                  <span class="material-symbols-outlined">crop_free</span>
+                  <span>Toggle Lesion Boxes</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Google PAIR Voice & Dialect Console (Minimum 48px touch targets) -->
+            <div class="m3-voice-container">
+              <div class="m3-voice-header">
+                <span class="m3-typescale-label-large">VERNACULAR VOICE CONSULTATION</span>
+                <div class="m3-dialect-selector">
+                  <span class="material-symbols-outlined m3-select-icon">translate</span>
+                  <select id="dialectSelect" class="m3-select" aria-label="Select farmer dialect">
+                    <option value="mr-IN" selected>Marathi (मराठी)</option>
+                    <option value="bn-IN">Bengali (বাংলা)</option>
+                    <option value="hi-IN">Hindi (हिन्दी)</option>
+                    <option value="te-IN">Telugu (తెలుగు)</option>
+                    <option value="ta-IN">Tamil (தமிழ்)</option>
+                    <option value="id-ID">Bahasa Indonesia</option>
+                    <option value="vi-VN">Vietnamese (Tiếng Việt)</option>
+                    <option value="en-IN">Indian English</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- 48px Ergonomic Audio Record Bar -->
+              <div class="m3-voice-action-bar">
+                <button id="recordAudioBtn" class="m3-fab m3-fab-primary" title="Tap to record spoken symptoms" aria-label="Record voice note">
+                  <span class="material-symbols-outlined">mic</span>
+                </button>
+                <div class="m3-audio-wave-track" id="waveformContainer">
+                  <div class="m3-wave-bar"></div>
+                  <div class="m3-wave-bar"></div>
+                  <div class="m3-wave-bar"></div>
+                  <div class="m3-wave-bar"></div>
+                  <div class="m3-wave-bar"></div>
+                  <div class="m3-wave-bar"></div>
+                  <div class="m3-wave-bar"></div>
+                  <div class="m3-wave-bar"></div>
+                  <div class="m3-wave-bar"></div>
+                  <div class="m3-wave-bar"></div>
+                </div>
+                <button id="playAudioVoiceNoteBtn" class="m3-button m3-button-outlined" title="Replay farmer's voice input">
+                  <span class="material-symbols-outlined">volume_up</span>
+                  <span>Play Input Note</span>
+                </button>
+              </div>
+
+              <!-- Dialect & English Dual Transcripts -->
+              <div class="m3-transcripts-card">
+                <div class="m3-transcript-item">
+                  <span class="m3-badge m3-badge-primary" id="nativeTranscriptLangTag">MR</span>
+                  <p id="nativeTranscriptText" class="m3-transcript-native">"साहेब, आमच्या कपाशीच्या पानांवर काळे-तांबडे डाग पडले आहेत आणि झाड सुकत चाललंय. काय फवारणी करू?"</p>
+                </div>
+                <div class="m3-transcript-item m3-secondary-transcript">
+                  <span class="m3-badge m3-badge-secondary">EN</span>
+                  <p id="englishTranscriptText" class="m3-transcript-english">"Sir, blackish-red spots have appeared on our cotton leaves and the plants are wilting. What should I spray?"</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- GPS Farm Coordinates Bar -->
+            <div class="m3-gps-bar">
+              <span class="material-symbols-outlined m3-gps-icon">pin_drop</span>
+              <div class="m3-gps-inputs">
+                <label>Lat: <input type="number" id="gpsLatInput" value="19.8250" step="0.0001" class="m3-coord-field"></label>
+                <label>Lng: <input type="number" id="gpsLngInput" value="75.6700" step="0.0001" class="m3-coord-field"></label>
+              </div>
+              <button id="btnRefreshGPS" class="m3-button m3-button-text">
+                <span class="material-symbols-outlined">my_location</span>
+                <span>Pin Farm</span>
+              </button>
+            </div>
+
+            <!-- Primary Action CTA (M3 Filled Button with Elevation) -->
+            <button id="btnRunDiagnosis" class="m3-button m3-button-filled m3-button-cta">
+              <span class="material-symbols-outlined">psychology</span>
+              <span>Run Multimodal Clinical Reasoning</span>
+              <span class="m3-button-badge">Gemini 3.8 Flash + Earth Engine</span>
+            </button>
+          </div>
+
+          <!-- M3 Agent Stepper Track -->
+          <div class="m3-card m3-card-outlined m3-stepper-card">
+            <h3 class="m3-typescale-title-small">Autonomous Multi-Agent Workflow State</h3>
+            <div class="m3-stepper">
+              <div class="m3-step-item active" id="step1Node">
+                <div class="m3-step-avatar">1</div>
+                <span class="m3-step-title">Multimodal Ingestion</span>
+              </div>
+              <div class="m3-step-divider active" id="step1Conn"></div>
+              <div class="m3-step-item active" id="step2Node">
+                <div class="m3-step-avatar">2</div>
+                <span class="m3-step-title">Earth Engine Radar</span>
+              </div>
+              <div class="m3-step-divider active" id="step2Conn"></div>
+              <div class="m3-step-item active" id="step3Node">
+                <div class="m3-step-avatar">3</div>
+                <span class="m3-step-title">Agronomic Decision</span>
+              </div>
+              <div class="m3-step-divider active" id="step3Conn"></div>
+              <div class="m3-step-item active" id="step4Node">
+                <div class="m3-step-avatar">4</div>
+                <span class="m3-step-title">Dialect Audio Prescribe</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Results, PAIR Explainability & Satellite Radar -->
+        <div class="m3-col-right">
+
+          <!-- Primary Critical Verdict Card -->
+          <div class="m3-card m3-verdict-card" id="verdictCard">
+            <div class="m3-verdict-container halt" id="verdictBanner">
+              <span class="material-symbols-outlined m3-verdict-large-icon" id="verdictIcon">cancel</span>
+              <div class="m3-verdict-content">
+                <span class="m3-verdict-pill" id="verdictActionTag">CRITICAL WEATHER SAFETY ALERT</span>
+                <h2 class="m3-typescale-headline-small" id="verdictTitle">HALT SPRAYING: Heavy Rain (18.5mm) Expected in 3 Hours</h2>
+                <p class="m3-typescale-body-medium" id="verdictReason">Convective monsoon rainstorm will wash away foliar chemicals into soil within 3 hours. Wastes ₹500 in dealer input costs.</p>
+              </div>
+            </div>
+
+            <!-- Google PAIR Explainability Accordion: "Why did the AI say this?" -->
+            <div class="m3-pair-explainability-box">
+              <button class="m3-pair-toggle-btn" id="btnToggleExplainability" aria-expanded="true">
+                <div class="m3-pair-toggle-title">
+                  <span class="material-symbols-outlined">help</span>
+                  <span>Google PAIR Explainable AI: Why did the agent recommend this action?</span>
+                </div>
+                <span class="material-symbols-outlined m3-chevron" id="explainChevron">expand_less</span>
+              </button>
+              
+              <div class="m3-pair-drawer-content" id="explainabilityDrawer">
+                <div class="m3-pair-weights-grid">
+                  <div class="m3-weight-item">
+                    <div class="m3-weight-header">
+                      <span>Visual Pathology Severity</span>
+                      <strong id="weightPathologyVal">38.5% (High)</strong>
+                    </div>
+                    <div class="m3-progress-track">
+                      <div class="m3-progress-fill warning" style="width: 38.5%;"></div>
+                    </div>
+                    <small id="weightPathologyDesc">Gemini 3.8 Flash detected angular water-soaked bacterial lesions on leaf blade.</small>
+                  </div>
+
+                  <div class="m3-weight-item">
+                    <div class="m3-weight-header">
+                      <span>Sentinel-2 Vegetation NDVI</span>
+                      <strong id="weightNdviVal">0.412 (Canopy Stressed)</strong>
+                    </div>
+                    <div class="m3-progress-track">
+                      <div class="m3-progress-fill info" style="width: 41%;"></div>
+                    </div>
+                    <small>Earth Engine spectral reflectance confirms moderate canopy degradation.</small>
+                  </div>
+
+                  <div class="m3-weight-item">
+                    <div class="m3-weight-header">
+                      <span>Precipitation Wash-Off Risk</span>
+                      <strong id="weightRainVal" class="text-error">88% Rain Probability</strong>
+                    </div>
+                    <div class="m3-progress-track">
+                      <div class="m3-progress-fill error" style="width: 88%;"></div>
+                    </div>
+                    <small>ERA5 radar forecast predicts 18.5mm rainfall arriving in 3 hours.</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Vernacular Audio Prescription Player (Cloud TTS Neural2) -->
+            <div class="m3-audio-prescription-card">
+              <div class="m3-player-meta">
+                <span class="m3-typescale-label-medium">
+                  <span class="material-symbols-outlined m3-sound-icon">record_voice_over</span>
+                  SPOKEN DIALECT PRESCRIPTION (GOOGLE CLOUD NEURAL2 TTS)
+                </span>
+                <span class="m3-duration-chip" id="audioDurationBadge">0:38 Duration</span>
+              </div>
+
+              <div class="m3-audio-controls-row">
+                <button id="btnPlayPrescriptionAudio" class="m3-button m3-button-filled m3-play-fab" title="Listen in native regional dialect (मराठी/বাংলা/Bahasa)">
+                  <span class="material-symbols-outlined" id="playAudioIcon">volume_up</span>
+                  <span id="playAudioLabel">Listen in Vernacular (मराठी)</span>
+                </button>
+                <button id="btnPlayEnglishAudio" class="m3-button m3-button-outlined m3-play-en-btn" title="Listen to clear English audio translation">
+                  <span class="material-symbols-outlined" id="playEnAudioIcon">translate</span>
+                  <span id="playEnAudioLabel">Listen in English</span>
+                </button>
+                <div class="m3-audio-progress-bar">
+                  <div class="m3-audio-fill" id="audioProgressFill"></div>
+                </div>
+              </div>
+
+              <div class="m3-native-script-card">
+                <div class="m3-script-row">
+                  <span class="m3-badge m3-badge-primary" id="scriptLangBadge">VERNACULAR DIALECT</span>
+                  <p class="m3-script-text" id="audioScriptNative">"महत्त्वाची सूचना: आज कोणतीही औषध फवारणी करू नका! सॅटेलाइट रडारनुसार पुढच्या ३ तासांत जोरदार पाऊस येणार आहे..."</p>
+                </div>
+                <div class="m3-script-row m3-script-en-box">
+                  <span class="m3-badge m3-badge-secondary">ENGLISH TRANSLATION</span>
+                  <p class="m3-script-text-sub" id="audioScriptEnglish">"Critical Weather Advisory: Do not spray any chemical pesticide today! Satellite radar predicts heavy monsoon rain arriving within 3 hours..."</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Farmer Economics & Input Savings Grid -->
+            <div class="m3-economics-grid">
+              <div class="m3-econ-cell organic">
+                <span class="m3-econ-label">AgriResilience Bio-Solution</span>
+                <span class="m3-econ-number" id="costOrganicVal">₹45</span>
+                <small>Neem Seed Kernel Extract 5%</small>
+              </div>
+              <div class="m3-econ-cell dealer">
+                <span class="m3-econ-label">Dealer Chemical Alternative</span>
+                <span class="m3-econ-number" id="costDealerVal">₹550</span>
+                <small>Copper Oxychloride + Antibiotic</small>
+              </div>
+              <div class="m3-econ-cell savings">
+                <span class="m3-econ-label">Net Farmer Savings / Season</span>
+                <span class="m3-econ-number text-success" id="costSavingsVal">+₹505</span>
+                <small>92% Cost Reduction</small>
+              </div>
+            </div>
+
+            <!-- Google PAIR Human-in-the-Loop Feedback Bar -->
+            <div class="m3-pair-feedback-bar">
+              <div class="m3-feedback-text">
+                <span class="material-symbols-outlined">rate_review</span>
+                <span>Human-in-the-Loop Validation: Was this diagnosis accurate?</span>
+              </div>
+              <div class="m3-feedback-actions">
+                <button id="btnConfirmDiagnosis" class="m3-button m3-button-tonal m3-button-sm">
+                  <span class="material-symbols-outlined">thumb_up</span>
+                  <span>Confirm (94.5%)</span>
+                </button>
+                <button id="btnDisputeDiagnosis" class="m3-button m3-button-outlined m3-button-sm">
+                  <span class="material-symbols-outlined">thumb_down</span>
+                  <span>Suggest Correction</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Export & Print Actions Toolbar -->
+            <div class="m3-prescription-actions-row">
+              <button id="btnPrintPrescription" class="m3-button m3-button-tonal m3-button-sm m3-print-btn" title="Generate and print official ICAR/FAO certified farm prescription slip">
+                <span class="material-symbols-outlined">print</span>
+                <span>Print Official Agronomic Slip</span>
+              </button>
+              <button id="btnDownloadJson" class="m3-button m3-button-outlined m3-button-sm" title="Export full multimodal diagnosis and geospatial telemetry as JSON">
+                <span class="material-symbols-outlined">download</span>
+                <span>Export Telemetry JSON</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Clinical Pathology Diagnostics Details -->
+          <div class="m3-card m3-card-outlined">
+            <div class="m3-card-header">
+              <div class="m3-card-title-group">
+                <span class="material-symbols-outlined m3-header-icon">biotech</span>
+                <h3 class="m3-typescale-title-medium">Clinical Pathology Diagnostics</h3>
+              </div>
+              <span class="m3-badge m3-badge-success" id="diagConfidenceBadge">94.5% Confidence</span>
+            </div>
+
+            <div class="m3-clinical-specs-grid">
+              <div class="m3-spec-cell">
+                <span class="m3-spec-label">Crop Botanical Identity</span>
+                <strong id="metricCropName" class="m3-typescale-body-large">Cotton (Gossypium hirsutum)</strong>
+              </div>
+              <div class="m3-spec-cell">
+                <span class="m3-spec-label">Causative Pathogen</span>
+                <strong id="metricPathogenName" class="m3-typescale-body-large">Xanthomonas citri pv. malvacearum</strong>
+              </div>
+              <div class="m3-spec-cell">
+                <span class="m3-spec-label">Pathogen Type</span>
+                <span class="m3-tag-filled" id="pathogenTypeBadge">BACTERIAL PATHOGEN</span>
+              </div>
+              <div class="m3-spec-cell">
+                <span class="m3-spec-label">Disease Stage</span>
+                <strong id="metricDiseaseStage" class="text-warning">Active Vegetative Spread</strong>
+              </div>
+              <div class="m3-spec-cell full-width">
+                <div class="m3-severity-header">
+                  <span>Leaf Area Affected:</span>
+                  <strong id="metricSeverityVal">38.5%</strong>
+                </div>
+                <div class="m3-progress-track">
+                  <div class="m3-progress-fill warning" id="leafSeverityFill" style="width: 38.5%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Visual Markers -->
+            <div class="m3-markers-card">
+              <span class="m3-typescale-label-medium">DIAGNOSTIC VISUAL MARKERS OBSERVED:</span>
+              <ul class="m3-markers-list" id="clinicalMarkersList">
+                <li>Angular water-soaked leaf lesions strictly bounded by small veins</li>
+                <li>Necrotic reddish-brown lesion centers with chlorotic yellow halos</li>
+                <li>Incipient black-arm lesion extending into petiole vascular tissue</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Geospatial Satellite Telemetry & Outbreak Radar -->
+          <div class="m3-card m3-card-outlined">
+            <div class="m3-card-header">
+              <div class="m3-card-title-group">
+                <span class="material-symbols-outlined m3-header-icon">radar</span>
+                <h3 class="m3-typescale-title-medium">Geospatial Micro-Climate Radar (Google Earth Engine)</h3>
+              </div>
+              <span class="m3-tag-outlined">Sentinel-2 L2A Pass: Oct 10, 2026</span>
+            </div>
+
+            <!-- Gauges Row -->
+            <div class="m3-gauges-grid">
+              <div class="m3-gauge-card">
+                <span class="m3-gauge-title">Photosynthetic NDVI</span>
+                <div class="m3-gauge-data">
+                  <span class="m3-gauge-stat" id="gaugeNdviVal">0.412</span>
+                  <span class="m3-badge m3-badge-warning" id="gaugeNdviStatus">Canopy Stressed</span>
+                </div>
+                <div class="m3-progress-track">
+                  <div class="m3-progress-fill warning" id="ndviBarFill" style="width: 41%;"></div>
+                </div>
+              </div>
+
+              <div class="m3-gauge-card">
+                <span class="m3-gauge-title">Canopy Moisture NDWI</span>
+                <div class="m3-gauge-data">
+                  <span class="m3-gauge-stat" id="gaugeNdwiVal">0.285</span>
+                  <span class="m3-badge m3-badge-info" id="gaugeNdwiStatus">High Saturation</span>
+                </div>
+                <div class="m3-progress-track">
+                  <div class="m3-progress-fill info" id="ndwiBarFill" style="width: 57%;"></div>
+                </div>
+              </div>
+
+              <div class="m3-gauge-card">
+                <span class="m3-gauge-title">Rain Risk (4 Hours)</span>
+                <div class="m3-gauge-data">
+                  <span class="m3-gauge-stat text-error" id="gaugeRainVal">18.5 mm</span>
+                  <span class="m3-badge m3-badge-error" id="gaugeRainProb">88% Probability</span>
+                </div>
+                <div class="m3-progress-track">
+                  <div class="m3-progress-fill error" id="rainBarFill" style="width: 88%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 72h Precipitation Radar Curve -->
+            <div class="m3-forecast-radar-box">
+              <span class="m3-typescale-label-medium">72-HOUR PRECIPITATION RADAR WINDOW (ERA5 TELEMETRY):</span>
+              <div class="m3-forecast-bars" id="forecastBarsContainer">
+                <!-- Dynamically rendered -->
+              </div>
+            </div>
+
+            <!-- Leaflet Satellite Map Frame -->
+            <div class="m3-map-wrapper">
+              <div class="m3-map-header-pill">
+                <span class="material-symbols-outlined">pin_drop</span>
+                <span>Farm Location & 5km Community Outbreak Alert Radius</span>
+              </div>
+              <div id="satelliteMap" class="m3-leaflet-frame"></div>
+            </div>
+
+            <!-- Outbreak Warning Strip -->
+            <div class="m3-outbreak-alert-strip error" id="outbreakAlertStrip">
+              <span class="material-symbols-outlined m3-alert-bell">notifications_active</span>
+              <div class="m3-alert-text">
+                <strong id="outbreakTitle">Community Outbreak Alert (3.8 km radius)</strong>
+                <p id="outbreakDescription">Bacterial Blight identified in 5 adjacent cotton fields in Jalna East cluster. Spores moving with prevailing winds. Alert village cooperative.</p>
+              </div>
+              <div class="m3-outbreak-actions">
+                <button id="btnDispatchBroadcast" class="m3-button m3-button-filled m3-button-sm m3-dispatch-pulse-btn" title="Simulate automated Cloud Pub/Sub vernacular telephony broadcast to 5km radius">
+                  <span class="material-symbols-outlined">cell_tower</span>
+                  <span>Simulate Cloud Broadcast</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step-by-Step Remediation Action Plan -->
+          <div class="m3-card m3-card-outlined">
+            <div class="m3-card-header">
+              <div class="m3-card-title-group">
+                <span class="material-symbols-outlined m3-header-icon">medication</span>
+                <h3 class="m3-typescale-title-medium">Actionable Remediation Protocol</h3>
+              </div>
+              <span class="m3-badge m3-badge-success">ICAR & FAO Verified</span>
+            </div>
+
+            <div class="m3-steps-timeline" id="remediationStepsTimeline">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+    <!-- Google Material 3 Footer -->
+    <footer class="m3-footer">
+      <p><strong>AgriResilience AI</strong> — Built strictly to <strong>Google Material Design 3</strong> & <strong>Google PAIR Guidelines</strong> for the <strong>Google Cloud AI Builder Cup 2026</strong>.</p>
+      <p class="m3-footer-sub">Models: Gemini 3.8 Flash • Google Earth Engine API • Google Cloud Text-to-Speech Neural2 • Deployed on Cloud Run & Firebase</p>
+    </footer>
+  </div>
+
+  <!-- ==========================================================================
+       Google Cloud Pub/Sub Broadcast Simulation Dialog (Modal)
+       ========================================================================== -->
+  <div class="m3-modal-backdrop" id="broadcastModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" style="display: none;">
+    <div class="m3-dialog-card">
+      <div class="m3-dialog-header">
+        <div class="m3-dialog-title-group">
+          <span class="material-symbols-outlined m3-pubsub-icon">cell_tower</span>
+          <div>
+            <h3 class="m3-typescale-title-medium" id="modalTitle">Google Cloud Pub/Sub Telephony Dispatcher</h3>
+            <span class="m3-dialog-sub">Topic: <code>projects/agriresilience-ai/topics/outbreak-alerts-5km</code> (Singapore)</span>
+          </div>
+        </div>
+        <button id="btnCloseModal" class="m3-icon-button" aria-label="Close dialog">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="m3-dialog-body">
+        <!-- Progress Stepper -->
+        <div class="m3-broadcast-steps">
+          <div class="m3-bstep active" id="bstep1">
+            <span class="m3-bstep-num">1</span>
+            <span>Cloud Pub/Sub Connect</span>
+          </div>
+          <div class="m3-bstep" id="bstep2">
+            <span class="m3-bstep-num">2</span>
+            <span>Geohash Subscribers</span>
+          </div>
+          <div class="m3-bstep" id="bstep3">
+            <span class="m3-bstep-num">3</span>
+            <span>Neural2 Audio Synthesis</span>
+          </div>
+          <div class="m3-bstep" id="bstep4">
+            <span class="m3-bstep-num">4</span>
+            <span>IVR/SMS Delivery</span>
+          </div>
+        </div>
+
+        <div class="m3-broadcast-status-card" id="broadcastStatusCard">
+          <div class="m3-spinner-row">
+            <div class="m3-spinner"></div>
+            <strong id="broadcastStatusTitle">Initializing Google Cloud Pub/Sub Pipeline...</strong>
+          </div>
+          <p id="broadcastStatusDetail">Publishing geo-targeted epidemiological alert envelope across 5km Haversine radius.</p>
+        </div>
+
+        <!-- Telephony Dispatch Ledger -->
+        <div class="m3-dispatch-ledger-card">
+          <div class="m3-ledger-header">
+            <span>REGISTERED SMALLHOLDERS WITHIN 5KM CLUSTER RADIUS:</span>
+            <span class="m3-badge m3-badge-info" id="ledgerSubscriberCount">14 Farms Targeted</span>
+          </div>
+          <div class="m3-ledger-list" id="dispatchLedgerList">
+            <!-- Dynamically populated rows -->
+          </div>
+        </div>
+
+        <!-- Summary Statistics -->
+        <div class="m3-broadcast-metrics-grid">
+          <div class="m3-bmetric">
+            <span>Dispatched Farms</span>
+            <strong id="bmetricFarms">14 / 14</strong>
+          </div>
+          <div class="m3-bmetric">
+            <span>Broadcast Latency</span>
+            <strong id="bmetricLatency">418 ms</strong>
+          </div>
+          <div class="m3-bmetric">
+            <span>Audio Dialect</span>
+            <strong id="bmetricDialect">Marathi (mr-IN)</strong>
+          </div>
+          <div class="m3-bmetric">
+            <span>Delivery Rate</span>
+            <strong class="text-success" id="bmetricSuccess">100% Verified</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="m3-dialog-actions">
+        <button id="btnFinishBroadcast" class="m3-button m3-button-filled">
+          <span>Close & Return to Cockpit</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       Printable Official ICAR / FAO Agronomic Advisory Slip
+       (Styled for standard A4 printing & PDF export)
+       ========================================================================== -->
+  <div class="printable-prescription-slip" id="printablePrescriptionSlip">
+    <div class="slip-header">
+      <div class="slip-emblem">
+        <span class="material-symbols-outlined" style="font-size: 36px; color: #1b5e20;">eco</span>
+      </div>
+      <div class="slip-title-block">
+        <h2>GOVERNMENT OF INDIA / FAO AGRO-ADVISORY NETWORK</h2>
+        <h3>ICAR-CRIDA Hyperlocal Crop Pathology & Micro-Climate Prescription</h3>
+        <p>Generated autonomously by <strong>AgriResilience AI</strong> on Google Cloud Run (asia-southeast1)</p>
+      </div>
+      <div class="slip-cert-box">
+        <div class="slip-qr-mock">
+          <span>QR VERIFIED</span>
+          <small id="slipCertId">CERT-2026-X891</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="slip-divider"></div>
+
+    <!-- Farmer & Field Info -->
+    <div class="slip-grid-two">
+      <div class="slip-info-box">
+        <h4>1. FARMER & LAND PARCEL</h4>
+        <p><strong>Farmer Name:</strong> <span id="slipFarmerName">Tukaram Shinde</span></p>
+        <p><strong>Region / Cluster:</strong> <span id="slipRegion">Jalna, Maharashtra, India</span></p>
+        <p><strong>GPS Coordinates:</strong> <span id="slipCoordinates">19.7515° N, 75.7139° E</span></p>
+        <p><strong>Geohash Index:</strong> <span id="slipGeohash">te7u3r (Level 6 Grid)</span></p>
+      </div>
+      <div class="slip-info-box">
+        <h4>2. SATELLITE RADAR TELEMETRY (EARTH ENGINE)</h4>
+        <p><strong>Sentinel-2 NDVI:</strong> <span id="slipNdvi">0.412 (Canopy Stressed)</span></p>
+        <p><strong>Moisture NDWI:</strong> <span id="slipNdwi">0.285 (High Saturation)</span></p>
+        <p><strong>ERA5 Rain Risk:</strong> <span id="slipRain">18.5 mm (88% Probability)</span></p>
+        <p><strong>Wash-Off Safety:</strong> <span id="slipWashOffRisk" class="badge-danger">CRITICAL RISK</span></p>
+      </div>
+    </div>
+
+    <!-- Clinical Diagnosis -->
+    <div class="slip-section">
+      <h4>3. CLINICAL PLANT PATHOLOGY DIAGNOSIS (GEMINI 3.8 FLASH)</h4>
+      <div class="slip-table">
+        <div class="slip-row header">
+          <span>Identified Crop</span>
+          <span>Causative Pathogen</span>
+          <span>Pathogen Type</span>
+          <span>Severity</span>
+          <span>Diagnostic Confidence</span>
+        </div>
+        <div class="slip-row">
+          <span id="slipCrop">Cotton (Gossypium hirsutum)</span>
+          <span id="slipPathogen">Xanthomonas citri pv. malvacearum</span>
+          <span id="slipPathogenType">BACTERIAL</span>
+          <span id="slipSeverity">38.5% Area</span>
+          <span id="slipConfidence">94.5%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agronomic Verdict -->
+    <div class="slip-verdict-box" id="slipVerdictContainer">
+      <h3 id="slipVerdictTitle">⛔ MANDATORY OVERRIDE: HALT CHEMICAL SPRAYING TODAY</h3>
+      <p id="slipVerdictReason">Heavy rainfall (18.5mm) forecast in 3 hours will wash away chemical fungicides, wasting ₹500 in dealer inputs and polluting rural groundwater.</p>
+      <p><strong>Recommended Action Window:</strong> <span id="slipWindow">Wait 16 hours. Spray tomorrow morning between 6:30 AM and 8:30 AM.</span></p>
+    </div>
+
+    <!-- Prescribed Protocol -->
+    <div class="slip-section">
+      <h4>4. PRESCRIBED BIO-REMEDIATION PROTOCOL</h4>
+      <div class="slip-protocol-content">
+        <p><strong>Treatment Solution:</strong> <span id="slipTreatmentName">Neem Seed Kernel Extract 5% (NSKE) + Copper Oxychloride Backup</span></p>
+        <ol id="slipProtocolSteps">
+          <li><strong>Hold Spray Application:</strong> Do not spray chemicals today. Heavy rainfall will wash them into the soil.</li>
+          <li><strong>Prepare Organic Bio-Wash:</strong> Soak 500g crushed dry neem seeds in 10 liters water overnight. Strain through muslin cloth and add 20g soap powder.</li>
+          <li><strong>Foliar Spray Technique:</strong> Spray tomorrow morning thoroughly on leaf undersides where bacterial colonies proliferate.</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Financial Accounting -->
+    <div class="slip-economics-table">
+      <div class="slip-econ-row">
+        <span>AgriResilience Organic Recipe Cost:</span>
+        <strong id="slipCostOrganic">₹45.00</strong>
+      </div>
+      <div class="slip-econ-row">
+        <span>Commercial Dealer Chemical Quote:</span>
+        <strong id="slipCostDealer">₹550.00</strong>
+      </div>
+      <div class="slip-econ-row total">
+        <span>Net Capital Protected / Farmer Savings:</span>
+        <strong id="slipCostSavings">+₹505.00 (92% Cost Reduction)</strong>
+      </div>
+    </div>
+
+    <!-- Signature & Authority -->
+    <div class="slip-footer">
+      <div class="slip-sig-box">
+        <div class="slip-sig-line"></div>
+        <span>Authorized Clinical Extension Agronomist</span>
+      </div>
+      <div class="slip-cloud-stamp">
+        <span>VERIFIED BY GOOGLE CLOUD RUN</span>
+        <small>asia-southeast1 • SHA-256 IMMUTABLE</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet Map JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="app.js?v=3.2.0"></script>
+</body>
+</html>
